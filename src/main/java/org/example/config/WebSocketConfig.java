@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 配置 WebSocket 端点
         registry.addEndpoint("/game")
-                .setAllowedOrigins("http://localhost:63343")  // 允许所有来源
+                .setAllowedOrigins("http://localhost:63342")  // 允许所有来源
                 .withSockJS();
     }
 }
