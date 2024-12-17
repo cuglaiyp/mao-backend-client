@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 配置 WebSocket 端点
-        registry.addEndpoint("/game")
+        registry.addEndpoint("/cat")
                 .setAllowedOrigins("http://localhost:63342")  // 允许所有来源
                 .withSockJS();
     }

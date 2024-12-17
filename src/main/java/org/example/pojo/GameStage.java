@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameStage {
+    private boolean running = false;
     private float progress = 0;
-    private Map<String, Integer> player2Score = new HashMap<>();
+    private ConcurrentHashMap<String, Integer> player2Score = new ConcurrentHashMap<>();
 }
