@@ -18,12 +18,11 @@ public class GameController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/boost")  // 映射客户端发送的消息
-    @SendTo("/topic/game")    // 广播消息到所有订阅了 /topic/game 的客户端
+    @MessageMapping("/boost")  // 映射客户端发送的消息// 广播消息到所有订阅了 /topic/game 的客户端
     public GameStage onBoost(String player) {
         if (gameStage.getProgress() == 100) {
             gameStage.setRunning(false);
-            messagingTemplate.convertAndSend("topic/ctrl", gameStage);
+            messagingTemplate.convertAndSend("/topic/ctrl", gameStage);
             return gameStage;
         }
         totalCnt += 1;
@@ -31,6 +30,7 @@ public class GameController {
         Integer orDefault = player2Score.getOrDefault(player, 0);
         player2Score.put(player, orDefault + 1);
         gameStage.setProgress(getProgress());
+        messagingTemplate.convertAndSend("/topic/game", gameStage);
         // 处理助力逻辑，更新进度
         return gameStage;
     }
@@ -39,18 +39,26 @@ public class GameController {
     @GetMapping("init")
     public GameStage init() {
         gameStage.setProgress(getProgress());
-        gameStage.setRunning(false);
         return gameStage;
     }
 
     // 用于管理端开启游戏
     @GetMapping("start")
-    public GameStage start() {
-        gameStage = new GameStage();
-        gameStage.setRunning(true);
-        messagingTemplate.convertAndSend("/topic/ctrl", gameStage);
-        return gameStage;
+    public void start() {
+        if (totalCnt == 0) {
+            gameStage.setRunning(true);
+            messagingTemplate.convertAndSend("/topic/ctrl", gameStage);
+        }
     }
+
+    @GetMapping("reset")
+    public void reset() {
+        totalCnt = 0;
+        gameStage = new GameStage();
+        gameStage.setRunning(false);
+        messagingTemplate.convertAndSend("/topic/ctrl", gameStage);
+    }
+
 
     private float getProgress() {
         if (totalCnt == 0 || gameStage.getPlayer2Score().isEmpty()) {

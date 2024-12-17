@@ -53,4 +53,19 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.11</version> <!-- 或者选择与 Java 8 兼容的较旧版本 -->
+                <configuration>
+                    <!-- 指定主类 -->
+                    <mainClass>org.example.WebSocketApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
 </project>
