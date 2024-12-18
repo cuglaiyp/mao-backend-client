@@ -12,7 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameStage {
-    private boolean running = false;
-    private float progress = 0;
+    // 场景状态：0游戏开始前初始化状态，1游戏开始状态，2游戏结束状态
+    private int status = 0;
+    private volatile float progress = 0;
     private ConcurrentHashMap<String, Integer> player2Score = new ConcurrentHashMap<>();
 }
