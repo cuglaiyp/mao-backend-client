@@ -1,6 +1,8 @@
 package org.example.controller;
 
-import org.example.pojo.GameStage;
+import org.example.pojo.GameInfo;
+import org.example.pojo.SceneInfo;
+import org.example.util.WebSocketConnectionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -10,74 +12,86 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class GameController {
 
-    public static GameStage gameStage = new GameStage();
-    private static volatile int totalCnt = 0;
-    private static ConcurrentHashMap<String, String> player2IP = new ConcurrentHashMap<>();
+    public static GameInfo gameInfo = new GameInfo();
+    public static SceneInfo sceneInfo = new SceneInfo();
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private WebSocketConnectionListener connListener;
 
     @MessageMapping("/boost")  // 映射客户端发送的消息// 广播消息到所有订阅了 /topic/game 的客户端
     public void onBoost(String player) {
-        if (gameStage.getProgress() == 100) {
-            gameStage.setStatus(2);
-            messagingTemplate.convertAndSend("/topic/ctrl", gameStage);
+        if (gameInfo.getProgress() == 100) {
+            sceneInfo.setStatus(2);
+            messagingTemplate.convertAndSend("/topic/ctrl", sceneInfo);
             return;
         }
-        totalCnt += 1;
-        ConcurrentHashMap<String, Integer> player2Score = gameStage.getPlayer2Score();
+        sceneInfo.setTotalPointCnt(sceneInfo.getTotalPointCnt() + 1);
+        ConcurrentHashMap<String, Integer> player2Score = gameInfo.getPlayer2Score();
         Integer orDefault = player2Score.getOrDefault(player, 0);
         player2Score.put(player, orDefault + 1);
-        gameStage.setProgress(getProgress());
-        // 处理助力逻辑，更新进度
+        gameInfo.setProgress(getProgress());
     }
 
     // 用于客户端新用户同步进度
     @GetMapping("init")
-    public GameStage init() {
-        gameStage.setProgress(getProgress());
-        return gameStage;
+    public Map<String, Object> init() {
+        Map<String, Object> res = new HashMap<>();
+        gameInfo.setProgress(getProgress());
+        res.put("gameInfo", gameInfo);
+        res.put("sceneInfo", sceneInfo);
+        return res;
     }
 
     // 用于管理端开启游戏
     @GetMapping("start")
     public void start() {
-        if (totalCnt == 0) {
-            gameStage.setStatus(1);
-            messagingTemplate.convertAndSend("/topic/ctrl", gameStage);
+        if (sceneInfo.getTotalPointCnt() == 0) {
+            sceneInfo.setStatus(1);
+            messagingTemplate.convertAndSend("/topic/ctrl", sceneInfo);
         }
     }
 
     @GetMapping("reset")
     public void reset() {
-        totalCnt = 0;
-        gameStage = new GameStage();
-        gameStage.setStatus(0);
-        player2IP = new ConcurrentHashMap<>();
-        messagingTemplate.convertAndSend("/topic/ctrl", gameStage);
+        sceneInfo = new SceneInfo();
+        gameInfo = new GameInfo();
+        messagingTemplate.convertAndSend("/topic/ctrl", sceneInfo);
     }
 
-
     private float getProgress() {
-        if (totalCnt == 0 || gameStage.getPlayer2Score().isEmpty()) {
+        if (sceneInfo.getTotalPointCnt() == 0 || gameInfo.getPlayer2Score().isEmpty()) {
             return 0;
         }
-        float progress = (float) totalCnt / gameStage.getPlayer2Score().size();
+        float progress = (float) sceneInfo.getTotalPointCnt() / gameInfo.getPlayer2Score().size();
         return progress < 100 ? progress : 100;
     }
 
     @PostMapping("judgeName")
     public boolean judgeName(@RequestBody String playerName, HttpServletRequest request) {
+        if (playerName.length() > 4) {
+            return false;
+        }
+        ConcurrentHashMap<String, String> player2IP = sceneInfo.getPlayer2IP();
         String clientIp = getClientIp(request);
         if (player2IP.containsKey(playerName) && !player2IP.get(playerName).equals(clientIp)) {
             return false;
         }
         player2IP.put(playerName, clientIp);
         return true;
+    }
+
+    @GetMapping("conn")
+    public int conn() {
+        System.out.println(connListener.getActiveConnections());
+        return connListener.getActiveConnections();
     }
 
     public String getClientIp(HttpServletRequest request) {

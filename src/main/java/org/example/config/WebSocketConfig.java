@@ -23,6 +23,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // 配置 WebSocket 端点
         registry.addEndpoint("/cat")
                 .setAllowedOrigins("http://8.156.69.47", "http://localhost:63342", "http://localhost:63343")  // 允许所有来源
-                .withSockJS();
+                .withSockJS()
+                .setHeartbeatTime(10000);
     }
 }
