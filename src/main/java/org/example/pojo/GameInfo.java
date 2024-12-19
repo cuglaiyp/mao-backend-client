@@ -13,4 +13,9 @@ public class GameInfo {
 
     private volatile float progress = 0;
     private ConcurrentHashMap<String, Integer> player2Score = new ConcurrentHashMap<>();
+
+    public void reset() {
+        progress = 0;
+        player2Score.clear();
+    }
 }
