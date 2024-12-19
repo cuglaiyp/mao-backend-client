@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // 允许所有来源访问
         registry.addMapping("/**")
-                .allowedOrigins("http://8.156.69.47", "http://localhost:63342")  // 允许所有来源
+                .allowedOrigins("http://8.156.69.47", "http://localhost:63342", "http://localhost:63343")  // 允许所有来源
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH, OPTIONS")  // 允许的 HTTP 方法
                 .allowedHeaders("*"); // 允许所有请求头
     }
