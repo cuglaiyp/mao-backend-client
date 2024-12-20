@@ -22,6 +22,13 @@
     </parent>
 
     <dependencies>
+        <!-- 引入 Netty 作为 Web 容器 -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
         <!-- Spring Boot Starter WebSocket -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
