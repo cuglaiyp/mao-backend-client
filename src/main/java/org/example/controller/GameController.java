@@ -61,8 +61,8 @@ public class GameController {
 
     @GetMapping("reset")
     public void reset() {
-        sceneInfo = new SceneInfo();
-        gameInfo = new GameInfo();
+        sceneInfo.reset();
+        gameInfo.reset();
         messagingTemplate.convertAndSend("/topic/ctrl", sceneInfo);
     }
 

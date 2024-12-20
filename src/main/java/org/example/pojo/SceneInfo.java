@@ -15,4 +15,10 @@ public class SceneInfo {
     private int onlineCnt = 0;
     ConcurrentHashMap<String, String> player2IP = new ConcurrentHashMap<>();
     private int totalPointCnt = 0;
+
+    public void reset() {
+        this.status = 0;
+        player2IP.clear();
+        this.totalPointCnt = 0;
+    }
 }
