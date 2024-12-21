@@ -1,6 +1,7 @@
 package org.example.schedule;
 
-import org.example.config.WebSocketSessionManager;
+import org.example.controller.GameController;
+import org.example.handler.WebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,15 +12,18 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class GameProgressBroadcaster {
 
-    @Autowired
-    private WebSocketSessionManager sessionManager;
+    private static float progressFlag = 0;
 
-    @Async("asyncExecutor")  // 指定使用自定义线程池
-    @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
+    @Autowired
+    private WebSocketHandler webSocketHandler;
+
+    @Async(value = "broadcastExecutor")  // 指定使用自定义线程池
+    @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MILLISECONDS)
     public void broadcastGameProgress() {
-        String message = "Current game progress: " + Math.random() * 100;
-        sessionManager.broadcastMessage(message)
-                .subscribe();  // 广播消息
+        if(Float.compare(GameController.getProgress(), progressFlag) != 0) {
+            webSocketHandler.broadcastGameMessage();
+            progressFlag = GameController.getProgress();
+        }
     }
 }
 
