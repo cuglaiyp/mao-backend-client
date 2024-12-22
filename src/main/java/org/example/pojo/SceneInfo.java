@@ -19,6 +19,6 @@ public class SceneInfo {
     public void reset() {
         this.status = 0;
         player2IP.clear();
-        this.totalPointCnt = 0;
+        this.totalPointCnt = 99;
     }
 }

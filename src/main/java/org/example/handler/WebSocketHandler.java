@@ -9,6 +9,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,7 +24,6 @@ import static org.example.controller.GameController.*;
 @Component
 @ServerPath(path = "/mao")
 public class WebSocketHandler {
-
 
 
     private static ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor() {{
@@ -59,6 +60,20 @@ public class WebSocketHandler {
         if (Float.compare(gameInfo.getProgress(), 100) == 0) {
             sceneInfo.setStatus(2);
             broadcastSceneMessage();
+            // 保存结果
+            File boostFile = new File("./boostFile.json");
+            if (!boostFile.exists()) {
+                try {
+                    boostFile.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try (FileOutputStream fos = new FileOutputStream(boostFile)) {
+                fos.write(JSON.toJSONBytes(gameInfo.getPlayer2Score()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
         String player = message;

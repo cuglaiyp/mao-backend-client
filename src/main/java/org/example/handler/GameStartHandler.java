@@ -27,7 +27,7 @@ public class GameStartHandler implements IFunctionHandler<Map<String, Object>> {
     // /judgeName
 
     public void start() {
-        if (sceneInfo.getTotalPointCnt() == 0) {
+        if (sceneInfo.getTotalPointCnt() == 99) {
             sceneInfo.setStatus(1);
             webSocketHandler.broadcastSceneMessage();
         }
