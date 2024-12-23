@@ -1,4 +1,4 @@
-package org.example.handler;
+package org.example.controller;
 
 import org.pyj.http.NettyHttpRequest;
 import org.pyj.http.annotation.NettyHttpHandler;
@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.example.controller.GameController.sceneInfo;
+import static org.example.manager.InfoManager.sceneInfo;
 
 @NettyHttpHandler(path = "/judgeName", method = "GET", equal = false)
-public class JudgeNameHandler implements IFunctionHandler<Map> {
+public class JudgeNameController implements IFunctionHandler<Map> {
 
     @Override
     public Map execute(NettyHttpRequest request) {

@@ -1,30 +1,24 @@
 package org.example.handler;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.example.manager.InfoManager;
 import org.pyj.yeauty.annotation.*;
 import org.pyj.yeauty.pojo.Session;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static org.example.controller.GameController.*;
-
-@Component
 @ServerPath(path = "/mao")
 public class WebSocketHandler {
-
 
     private static ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor() {{
         setCorePoolSize(20); // 核心线程数
@@ -35,15 +29,18 @@ public class WebSocketHandler {
     }};
 
     @BeforeHandshake
-    public void handshake(Session session, HttpHeaders headers, @RequestParam String req, @RequestParam MultiValueMap reqMap, @PathVariable String arg, @PathVariable Map pathMap) {
+    public void handshake(Session session, HttpHeaders headers, @RequestParam String player, @RequestParam MultiValueMap reqMap, @PathVariable String arg, @PathVariable Map pathMap) {
+        if (StrUtil.isBlank(player)) {
+            session.close();
+        }
         session.setSubprotocols("stomp");
     }
 
     @OnOpen
     public void onOpen(Session session, HttpHeaders headers, @RequestParam String player, @RequestParam MultiValueMap reqMap, @PathVariable String arg, @PathVariable Map pathMap) {
         session.setAttribute("player", player);
-        player2Session.put(player, session);
-        gameInfo.getPlayer2Score().putIfAbsent(player, 0);
+        InfoManager.player2Session.put(player, session);
+        InfoManager.gameInfo.getPlayer2Score().putIfAbsent(player, 0);
     }
 
     @OnClose
@@ -52,35 +49,38 @@ public class WebSocketHandler {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        player2Session.remove(session.getAttribute("player"));
+        InfoManager.player2Session.remove(session.getAttribute("player"));
     }
 
     @OnMessage
     public void onMessage(Session session, String message) {
-        if (Float.compare(gameInfo.getProgress(), 100) == 0) {
-            sceneInfo.setStatus(2);
+        if (Float.compare(InfoManager.gameInfo.getProgress(), 100) == 0
+                && InfoManager.sceneInfo.getStatus() == 1) {
+            // 设置状态
+            InfoManager.sceneInfo.setStatus(2);
+            // 生成喜气卡话术
+            generateXiWord();
+            // 广播游戏结果
             broadcastSceneMessage();
             // 保存结果
-            File boostFile = new File("./boostFile.json");
-            if (!boostFile.exists()) {
-                try {
-                    boostFile.createNewFile();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            try (FileOutputStream fos = new FileOutputStream(boostFile)) {
-                fos.write(JSON.toJSONBytes(gameInfo.getPlayer2Score()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            FileUtil.writeString(JSON.toJSONString(InfoManager.gameInfo), "./gameInfo.json", StandardCharsets.UTF_8);
+            FileUtil.writeString(JSON.toJSONString(InfoManager.sceneInfo), "./sceneInfo.json", StandardCharsets.UTF_8);
             return;
         }
         String player = message;
-        sceneInfo.setTotalPointCnt(sceneInfo.getTotalPointCnt() + 1);
-        ConcurrentHashMap<String, Integer> player2Score = gameInfo.getPlayer2Score();
+        InfoManager.sceneInfo.setTotalPointCnt(InfoManager.sceneInfo.getTotalPointCnt() + 1);
+        ConcurrentHashMap<String, Integer> player2Score = InfoManager.gameInfo.getPlayer2Score();
         player2Score.put(player, player2Score.getOrDefault(player, 0) + 1);
-        gameInfo.setProgress(getProgress());
+        InfoManager.gameInfo.setProgress(InfoManager.getProgress());
+    }
+
+    private void generateXiWord() {
+        Collections.shuffle(InfoManager.xiWords);
+        Iterator<Map.Entry<String, Session>> iterator = InfoManager.player2Session.entrySet().iterator();
+        for (int i = 0; iterator.hasNext(); i = (i + 1) % InfoManager.xiWords.size()) {
+            Map.Entry<String, Session> next = iterator.next();
+            InfoManager.sceneInfo.getPlayer2Xi().putIfAbsent(next.getKey(), InfoManager.xiWords.get(i));
+        }
     }
 
     @OnBinary
@@ -107,12 +107,12 @@ public class WebSocketHandler {
         }
     }
 
-    public void broadcastGameMessage() {
-        LinkedHashMap<String, Integer> top10Map = gameInfo.getPlayer2Score().entrySet().stream()
+    public static void broadcastGameMessage() {
+        LinkedHashMap<String, Integer> top10Map = InfoManager.gameInfo.getPlayer2Score().entrySet().stream()
                 .sorted((entry1, entry2) -> Integer.compare(entry2.getValue(), entry1.getValue())) // 按分数降序排序
                 .limit(10)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-        Iterator<Map.Entry<String, Session>> iterator = player2Session.entrySet().iterator();
+        Iterator<Map.Entry<String, Session>> iterator = InfoManager.player2Session.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Session> next = iterator.next();
             String player = next.getKey();
@@ -124,14 +124,14 @@ public class WebSocketHandler {
             Map msg = new HashMap();
             msg.put("type", 0);
             msg.put("player2Score", top10Map);
-            msg.put("playerScore", gameInfo.getPlayer2Score().get(player));
-            msg.put("progress", gameInfo.getProgress());
+            msg.put("playerScore", InfoManager.gameInfo.getPlayer2Score().get(player));
+            msg.put("progress", InfoManager.gameInfo.getProgress());
             executor.execute(() -> session.sendText(JSON.toJSONString(msg)));
         }
     }
 
-    public void broadcastSceneMessage() {
-        Iterator<Map.Entry<String, Session>> iterator = player2Session.entrySet().iterator();
+    public static void broadcastSceneMessage() {
+        Iterator<Map.Entry<String, Session>> iterator = InfoManager.player2Session.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Session> next = iterator.next();
             String player = next.getKey();
@@ -142,8 +142,9 @@ public class WebSocketHandler {
             }
             Map msg = new HashMap();
             msg.put("type", 1);
-            msg.put("status", sceneInfo.getStatus());
-            msg.put("onlineCnt", player2Session.size());
+            msg.put("status", InfoManager.sceneInfo.getStatus());
+            msg.put("onlineCnt", InfoManager.player2Session.size());
+            msg.put("xiCardWord", InfoManager.sceneInfo.getPlayer2Xi().get(player));
             executor.execute(() -> session.sendText(JSON.toJSONString(msg)));
         }
     }
