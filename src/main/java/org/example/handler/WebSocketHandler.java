@@ -1,6 +1,7 @@
 package org.example.handler;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
@@ -42,8 +43,6 @@ public class WebSocketHandler {
         session.setAttribute("player", player);
         InfoManager.player2Session.put(player, session);
         InfoManager.gameInfo.getPlayer2Score().putIfAbsent(player, 0);
-        InfoManager.sceneInfo.getPlayer2Xi().putIfAbsent(player,
-                InfoManager.xiWords.get(RandomUtil.randomInt(0, InfoManager.xiWords.size() - 1)));
     }
 
     @OnClose
@@ -52,7 +51,6 @@ public class WebSocketHandler {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        InfoManager.player2Session.remove(session.getAttribute("player"));
     }
 
     @OnMessage
@@ -111,10 +109,11 @@ public class WebSocketHandler {
     }
 
     public static void broadcastGameMessage() {
-        LinkedHashMap<String, Integer> top10Map = InfoManager.gameInfo.getPlayer2Score().entrySet().stream()
+        List<String> leaderboard = InfoManager.gameInfo.getPlayer2Score().entrySet().stream()
                 .sorted((entry1, entry2) -> Integer.compare(entry2.getValue(), entry1.getValue())) // 按分数降序排序
                 .limit(10)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.toList());
         Iterator<Map.Entry<String, Session>> iterator = InfoManager.player2Session.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Session> next = iterator.next();
@@ -126,7 +125,7 @@ public class WebSocketHandler {
             }
             Map msg = new HashMap();
             msg.put("type", 0);
-            msg.put("player2Score", top10Map);
+            msg.put("player2Score", leaderboard);
             msg.put("playerScore", InfoManager.gameInfo.getPlayer2Score().get(player));
             msg.put("progress", InfoManager.gameInfo.getProgress());
             executor.execute(() -> session.sendText(JSON.toJSONString(msg)));

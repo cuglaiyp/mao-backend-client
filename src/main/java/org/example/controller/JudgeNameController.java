@@ -1,5 +1,8 @@
 package org.example.controller;
 
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
+import org.example.manager.InfoManager;
 import org.pyj.http.NettyHttpRequest;
 import org.pyj.http.annotation.NettyHttpHandler;
 import org.pyj.http.handler.IFunctionHandler;
@@ -7,6 +10,7 @@ import org.pyj.http.handler.IFunctionHandler;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.example.manager.InfoManager.sceneInfo;
@@ -23,15 +27,19 @@ public class JudgeNameController implements IFunctionHandler<Map> {
             res.put("code", 1);
             return res;
         }
-        ConcurrentHashMap<String, String> player2IP = sceneInfo.getPlayer2IP();
-        String clientIp = request.getIp();
-        if (player2IP.containsKey(player) && !player2IP.get(player).equals(clientIp)) {
+        String uuid = request.headers().get("uuid");
+        ConcurrentHashMap<String, String> player2Cookie = sceneInfo.getPlayer2Cookie();
+        if (player2Cookie.containsKey(player) && !player2Cookie.get(player).equals(uuid)) {
             res.put("msg", "名称已存在！");
             res.put("code", 1);
             return res;
         }
-        player2IP.put(player, clientIp);
+        uuid = IdUtil.fastSimpleUUID();
+        player2Cookie.put(player, uuid);
+        InfoManager.sceneInfo.getPlayer2Xi().putIfAbsent(player,
+                InfoManager.xiWords.get(RandomUtil.randomInt(0, InfoManager.xiWords.size() - 1)));
         res.put("code", 0);
+        res.put("uuid", uuid);
         return res;
     }
 

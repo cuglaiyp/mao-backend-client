@@ -1,6 +1,7 @@
 package org.example.controller;
 
 
+import cn.hutool.core.util.RandomUtil;
 import org.example.manager.InfoManager;
 import org.pyj.http.NettyHttpRequest;
 import org.pyj.http.annotation.NettyHttpHandler;
@@ -10,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,12 +32,15 @@ public class GameInitController implements IFunctionHandler<Map<String, Object>>
     public Map<String, Object> init(String player) {
 
         Map<String, Object> res = new HashMap<>();
-        LinkedHashMap<String, Integer> top10Map = InfoManager.gameInfo.getPlayer2Score().entrySet().stream()
+        List<String> leaderboard = InfoManager.gameInfo.getPlayer2Score().entrySet().stream()
                 .sorted((entry1, entry2) -> Integer.compare(entry2.getValue(), entry1.getValue())) // 按分数降序排序
                 .limit(10)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.toList());
+        InfoManager.sceneInfo.getPlayer2Xi().putIfAbsent(player,
+                InfoManager.xiWords.get(RandomUtil.randomInt(0, InfoManager.xiWords.size() - 1)));
         Map gameInfo = new HashMap();
-        gameInfo.put("player2Score", top10Map);
+        gameInfo.put("player2Score", leaderboard);
         gameInfo.put("playerScore", InfoManager.gameInfo.getPlayer2Score().get(player));
         gameInfo.put("progress", InfoManager.gameInfo.getProgress());
         Map sceneInfo = new HashMap();
