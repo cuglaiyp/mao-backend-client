@@ -1,6 +1,7 @@
 package org.example.handler;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -41,6 +42,8 @@ public class WebSocketHandler {
         session.setAttribute("player", player);
         InfoManager.player2Session.put(player, session);
         InfoManager.gameInfo.getPlayer2Score().putIfAbsent(player, 0);
+        InfoManager.sceneInfo.getPlayer2Xi().putIfAbsent(player,
+                InfoManager.xiWords.get(RandomUtil.randomInt(0, InfoManager.xiWords.size() - 1)));
     }
 
     @OnClose

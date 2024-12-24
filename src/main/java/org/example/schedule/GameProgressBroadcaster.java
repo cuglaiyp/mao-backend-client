@@ -14,7 +14,7 @@ public class GameProgressBroadcaster {
     private static float progressFlag = 0;
 
     @Async(value = "broadcastExecutor")  // 指定使用自定义线程池
-    @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MILLISECONDS)
+    @Scheduled(fixedRate = 200, timeUnit = TimeUnit.MILLISECONDS)
     public void broadcastGameProgress() {
         if(Float.compare(InfoManager.getProgress(), progressFlag) != 0) {
             WebSocketHandler.broadcastGameMessage();
