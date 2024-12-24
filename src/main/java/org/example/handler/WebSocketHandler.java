@@ -24,7 +24,7 @@ public class WebSocketHandler {
     private static ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor() {{
         setCorePoolSize(20); // 核心线程数
         setMaxPoolSize(40);  // 最大线程数
-        setQueueCapacity(200); // 队列容量
+        setQueueCapacity(500); // 队列容量
         setThreadNamePrefix("broader-"); // 线程名前缀
         initialize(); // 初始化线程池
     }};
@@ -146,11 +146,28 @@ public class WebSocketHandler {
             Map msg = new HashMap();
             msg.put("type", 1);
             msg.put("status", InfoManager.sceneInfo.getStatus());
-            msg.put("onlineCnt", InfoManager.player2Session.size());
             msg.put("xiCardWord", InfoManager.sceneInfo.getPlayer2Xi().get(player));
             executor.execute(() -> session.sendText(JSON.toJSONString(msg)));
         }
     }
+
+    public static void broadcastOnlineMessage() {
+        Iterator<Map.Entry<String, Session>> iterator = InfoManager.player2Session.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Session> next = iterator.next();
+            String player = next.getKey();
+            Session session = next.getValue();
+            if (!session.isActive()) {
+                iterator.remove();
+                continue;
+            }
+            Map msg = new HashMap();
+            msg.put("type", 2);
+            msg.put("onlineCnt", InfoManager.player2Session.size());
+            executor.execute(() -> session.sendText(JSON.toJSONString(msg)));
+        }
+    }
+
 
 
 }
