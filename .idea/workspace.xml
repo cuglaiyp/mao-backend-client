@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cc01ef0e-c867-4219-acf4-b01a6b6cd06a" name="Changes" comment="喜卡生成优化">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/WebSocketClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/WebSocketApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/config/ThreadPoolConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/controller/GameInitController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/controller/GameResetController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/controller/GameStartController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/controller/JudgeNameController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/controller/UpdateXiWordsController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/handler/WebSocketHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/manager/InfoManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/pojo/GameInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/pojo/PlayerScore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/pojo/SceneInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/schedule/GameProgressBroadcaster.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="customMavenHome" value="$USER_HOME$/Environment/apache-maven-3.8.1-bin/apache-maven-3.8.1" />
+        <option name="localRepository" value="$USER_HOME$/Environment/apache-maven-3.8.1-bin/apache-maven-3.8.1/repository" />
+        <option name="mavenHomeTypeForPersistence" value="CUSTOM" />
+        <option name="userSettingsFile" value="$USER_HOME$/Environment/apache-maven-3.8.1-bin/apache-maven-3.8.1/conf/settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2qHeKGflnkhq588OoKg1Bp0qmjz" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.GameController.executor": "Run",
+    "Application.InfoManager.executor": "Run",
+    "Application.WebSocketApplication.executor": "Debug",
+    "Application.WebSocketClient.executor": "Debug",
+    "Application.WebSocketClientLoop.executor": "Debug",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "Maven.mao-backend [clean].executor": "Run",
+    "Maven.mao-backend [package].executor": "Run",
+    "Maven.mao-backend [validate].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/abc/Data/Code/mao-backend/mao-backend-client",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "editor.preferences.import"
+  }
+}]]></component>
+  <component name="RunManager" selected="Application.WebSocketClient">
+    <configuration name="InfoManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.manager.InfoManager" />
+      <module name="mao-backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.manager.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebSocketApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.WebSocketApplication" />
+      <module name="mao-backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.schedule.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebSocketClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.WebSocketClient" />
+      <module name="mao-backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebSocketClientLoop" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.WebSocketClientLoop" />
+      <module name="mao-backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.WebSocketClient" />
+        <item itemvalue="Application.WebSocketClientLoop" />
+        <item itemvalue="Application.WebSocketApplication" />
+        <item itemvalue="Application.InfoManager" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cc01ef0e-c867-4219-acf4-b01a6b6cd06a" name="Changes" comment="" />
+      <created>1734323868035</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1734323868035</updated>
+    </task>
+    <task id="LOCAL-00001" summary="初始化websocket">
+      <option name="closed" value="true" />
+      <created>1734341387390</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1734341387390</updated>
+    </task>
+    <task id="LOCAL-00002" summary="添加控制">
+      <option name="closed" value="true" />
+      <created>1734427299213</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1734427299213</updated>
+    </task>
+    <task id="LOCAL-00003" summary="添加二维码，优化样式">
+      <option name="closed" value="true" />
+      <created>1734514863118</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1734514863118</updated>
+    </task>
+    <task id="LOCAL-00004" summary="优化性能，改点击广播为定时广播">
+      <option name="closed" value="true" />
+      <created>1734593020226</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1734593020226</updated>
+    </task>
+    <task id="LOCAL-00005" summary="优化文件名称，添加在线人数统计">
+      <option name="closed" value="true" />
+      <created>1734600353906</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1734600353907</updated>
+    </task>
+    <task id="LOCAL-00006" summary="切换webflux">
+      <option name="closed" value="true" />
+      <created>1734687280135</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1734687280135</updated>
+    </task>
+    <task id="LOCAL-00007" summary="优化文件命名，添加喜卡文案">
+      <option name="closed" value="true" />
+      <created>1734946984975</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1734946984975</updated>
+    </task>
+    <task id="LOCAL-00008" summary="喜卡生成优化">
+      <option name="closed" value="true" />
+      <created>1735034860733</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1735034860733</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="初始化websocket" />
+    <MESSAGE value="添加控制" />
+    <MESSAGE value="添加二维码，优化样式" />
+    <MESSAGE value="优化性能，改点击广播为定时广播" />
+    <MESSAGE value="优化文件名称，添加在线人数统计" />
+    <MESSAGE value="切换webflux" />
+    <MESSAGE value="优化文件命名，添加喜卡文案" />
+    <MESSAGE value="喜卡生成优化" />
+    <option name="LAST_COMMIT_MESSAGE" value="喜卡生成优化" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>jar://$USER_HOME$/Environment/apache-maven-3.8.1-bin/apache-maven-3.8.1/repository/org/springframework/spring-messaging/5.3.27/spring-messaging-5.3.27.jar!/org/springframework/messaging/MessageChannel.class</url>
+          <line>15</line>
+          <properties class="org.springframework.messaging.MessageChannel" method="send">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
+          <url>jar://$USER_HOME$/Environment/apache-maven-3.8.1-bin/apache-maven-3.8.1/repository/org/springframework/spring-messaging/5.3.27/spring-messaging-5.3.27.jar!/org/springframework/messaging/support/ExecutorSubscribableChannel.class</url>
+          <line>100</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
+          <url>jar://$USER_HOME$/Environment/apache-maven-3.8.1-bin/apache-maven-3.8.1/repository/org/springframework/spring-messaging/5.3.27/spring-messaging-5.3.27.jar!/org/springframework/messaging/simp/user/UserDestinationMessageHandler.class</url>
+          <line>138</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+      <breakpoints-defaults>
+        <breakpoint suspend="THREAD" type="java-line" />
+      </breakpoints-defaults>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="java.util.concurrent.ConcurrentHashMap$MapEntry" memberName="value" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+</project>

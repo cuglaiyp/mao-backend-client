@@ -36,42 +36,14 @@
             <version>2.0.51</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.github.pengyongjianpyj</groupId>
-            <artifactId>netty-websocket-http-spring-boot-starter</artifactId>
-            <version>0.1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/netty-websocket-http-spring-boot-starter-0.1.0.jar</systemPath>
-        </dependency>
 
-        <!--        <dependency>
-                    <groupId>io.github.pengyongjianpyj</groupId>
-                    <artifactId>netty-websocket-http-spring-boot-starter</artifactId>
-                    <version>0.1.0</version>
-                </dependency>-->
 
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-codec-http</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
 
 
         <!-- Spring Boot Starter Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Spring Boot Starter Test (Optional, for testing) -->
@@ -80,6 +52,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Spring Boot WebSocket依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
 
         <!-- Jackson for JSON binding (already included in spring-boot-starter-web) -->
         <dependency>
