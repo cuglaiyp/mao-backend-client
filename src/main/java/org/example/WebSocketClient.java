@@ -14,19 +14,27 @@ import java.util.concurrent.TimeUnit;
 public class WebSocketClient {
 
     private static List<Session> sessions = new ArrayList<>();
+    private static List<String> userNames = new ArrayList<>();
     private static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 
     public static void main(String[] args) throws InterruptedException {
         try {
-            for (int i = 0; i < 200; i++) {
-                String serverURI = "ws://8.156.69.47:8080/mao?player=" + i; // 连接到 WebSocket 服务器
+            for (int i = 0; i < 1000; i++) {
+                String userName = RandomUtil.randomString(4);
+                userNames.add(userName);
+                String serverURI = "ws://8.156.69.47:8080/mao?player=" + userName;  // 连接到 WebSocket 服务器
                 WebSocketContainer container = ContainerProvider.getWebSocketContainer();
                 container.connectToServer(WebSocketClient.class, new URI(serverURI));
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
+        sessions.forEach(session -> {
+            scheduler.scheduleAtFixedRate(() -> {
+                WebSocketClient.sendMessage(session, userNames.get(RandomUtil.randomInt(userNames.size())));
+            }, 5, 1, TimeUnit.SECONDS);
+        });
         while (true) {
             Thread.sleep(10000);
         }
@@ -36,9 +44,6 @@ public class WebSocketClient {
     public void onOpen(Session session) {
         sessions.add(session);
         System.out.println("Connected to server");
-        scheduler.scheduleAtFixedRate(() -> {
-            sendMessage(session, RandomUtil.randomInt(0, 200) + "");
-        }, 5, 1, TimeUnit.SECONDS);
     }
 
     @OnMessage
@@ -48,22 +53,22 @@ public class WebSocketClient {
 
     @OnClose
     public void onClose() {
-        System.out.println("Connection closed");
+        System.err.println("Connection closed");
     }
 
     @OnError
     public void onError(Throwable throwable) {
-        throwable.printStackTrace();
+        System.err.println(throwable.getMessage());
     }
 
-    public void sendMessage(Session session, String message) {
+    public static void sendMessage(Session session, String message) {
         try {
             if (session != null && session.isOpen()) {
                 session.getBasicRemote().sendText(message);
                 System.out.println("Sent message: " + message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 }
